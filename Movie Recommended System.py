@@ -30,12 +30,18 @@ vectorizer=CountVectorizer()
 genre_matrix=vectorizer.fit_transform(df["Genre"])
 
 similarity=cosine_similarity(genre_matrix)
-
+df["Movie"]=df["Movie"].str.lower()
 def recommend(movie_name):
+    movie_name=movie_name.lower()
+    
+    if movie_name not in df["Movie"].values:
+        print("Movie not found")
+        return
+    
     movie_index=df[df["Movie"]==movie_name].index[0]
     similarity_scores=list(enumerate(similarity[movie_index]))
     similarity_scores=sorted(similarity_scores,key=lambda x:x[1],reverse=True)
-    print("Recommended Movies:")
+    print(f"Recommended movies for {movie_name}:")
 
     for i in similarity_scores[1:4]:
         print(df.iloc[i[0]]["Movie"])
